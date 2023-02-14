@@ -30,7 +30,6 @@ userController.createUser = async (req, res, next) => {
 userController.getAllUser = async (req, res, next) => {
   const { name } = req.query;
   const filter = { isDeleted: false };
-  name ? (filter.name = name.toLowerCase()) : filter;
 
   try {
     const errors = validationResult(req);
@@ -39,7 +38,15 @@ userController.getAllUser = async (req, res, next) => {
     }
 
     const getData = await User.find(filter);
-    sendResponse(res, 200, true, { getData }, null, "Get User Success");
+    let filterUser;
+
+    name
+      ? (filterUser = getData.filter((user) =>
+          user.name.includes(name.toLowerCase())
+        ))
+      : (filterUser = getData);
+
+    sendResponse(res, 200, true, { filterUser }, null, "Get User Success");
   } catch (err) {
     next(err);
   }

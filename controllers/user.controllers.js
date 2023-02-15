@@ -67,11 +67,12 @@ userController.getUserById = async (req, res, next) => {
 
     filter._id = userId;
     const getUser = await User.find(filter);
-    if (getUser.length !== 0) {
-      sendResponse(res, 200, true, { getUser }, null, "Get User Success");
-    } else {
-      throw new AppError(402, "Bad Request", "User is not found");
-    }
+    sendResponse(res, 200, true, { getUser }, null, "Get User Success");
+    // if (getUser.length !== 0) {
+    //   sendResponse(res, 200, true, { getUser }, null, "Get User Success");
+    // } else {
+    //   throw new AppError(402, "Bad Request", "User is not found");
+    // }
   } catch (err) {
     next(err);
   }

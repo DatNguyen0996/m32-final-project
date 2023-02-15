@@ -10,6 +10,11 @@
 
   ***
 
+- Get user by Id: method GET
+  http://localhost:5000/users/:userId
+
+  ***
+
 - Create user: method POST/ body request: name, role
 
   body request: {"name": "Nguyen Van A","role": "employee"}
@@ -26,8 +31,8 @@
 
   ***
 
-  - Get all task of 1 user: method GET
-    http://localhost:5000/users/gettask/:userId
+- Get all task of 1 user: method GET
+  http://localhost:5000/users/gettask/:userId
 
   ***
 

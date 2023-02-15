@@ -6,7 +6,7 @@
 ## End point and body request
 
 - Get all user: method GET
-  http://localhost:5000/user?name="userName"
+  http://localhost:5000/users?name="userName"
 
   ***
 
@@ -14,7 +14,7 @@
 
   body request: {"name": "Nguyen Van A","role": "employee"}
 
-  http://localhost:5000/user
+  http://localhost:5000/users
 
   ***
 
@@ -22,22 +22,22 @@
 
   body request: {"name": "Nguyen Van A","role": "employee"}
 
-  http://localhost:5000/user/:userID
+  http://localhost:5000/users/:userID
+
+  ***
+
+  - Get all task of 1 user: method GET
+    http://localhost:5000/users/gettask/:userId
 
   ***
 
 - Get all task: method GET
-  http://localhost:5000/task?status="task Status"
-
-  ***
-
-- Get all task of 1 user: method GET
-  http://localhost:5000/task/user/:userId
+  http://localhost:5000/tasks?status="task Status"
 
   ***
 
 - Get a single task by id: method GET
-  http://localhost:5000/task/:taskId
+  http://localhost:5000/tasks/:taskId
 
   ***
 
@@ -50,7 +50,7 @@
   "status":"pending"
   }
 
-  http://localhost:5000/task
+  http://localhost:5000/tasks
 
   ***
 
@@ -58,7 +58,7 @@
 
   body request: {"status":"working"}
 
-  http://localhost:5000/task/status/:taskId
+  http://localhost:5000/tasks/status/:taskId
 
   ***
 
@@ -67,10 +67,10 @@
   body request: {"userId":"63e5791031d930a71824197b"}
   body request: {"userId":null} unassign task
 
-  http://localhost:5000/task/assign/:taskId
+  http://localhost:5000/tasks/assign/:taskId
 
   ***
 
 - Delete a task: method DELETE
 
-  http://localhost:5000/task/:taskId
+  http://localhost:5000/tasks/:taskId

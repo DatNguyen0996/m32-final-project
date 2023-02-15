@@ -15,11 +15,11 @@ let validateTask = () => {
   return [
     check("name", "name does not Empty").not().isEmpty(),
     check("description", "description does not Empty").not().isEmpty(),
-    check("status", "status does not Empty").not().isEmpty(),
-    check(
-      "status",
-      "status must be pending or working or review or done or archive"
-    ).isIn(["pending", "working", "review", "done", "archive"]),
+    // check("status", "status does not Empty").not().isEmpty(),
+    // check(
+    //   "status",
+    //   "status must be pending or working or review or done or archive"
+    // ).isIn(["pending", "working", "review", "done", "archive"]),
   ];
 };
 

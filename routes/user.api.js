@@ -5,17 +5,35 @@ const { validate } = require("../validator/validator.js");
 const {
   createUser,
   getAllUser,
+  getUserById,
   updateUserById,
   deleteUserById,
+  getAllTask1User,
 } = require("../controllers/user.controllers");
 
 //Read
 /**
  * @route GET api/user?name=<name>
- * @description get list of
+ * @description get list of user
  * @access public
  */
 router.get("/", getAllUser);
+
+//Read
+/**
+ * @route GET api/user/:userId
+ * @description get user by ID
+ * @access public
+ */
+router.get("/:userId", validate.validateUserId(), getUserById);
+
+//Read
+/**
+ * @route GET api/user/gettask/:userId
+ * @description get all tasks of 1 user
+ * @access public
+ */
+router.get("/gettask/:userId", validate.validateUserId(), getAllTask1User);
 
 //Create
 /**

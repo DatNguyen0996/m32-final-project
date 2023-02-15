@@ -6,7 +6,10 @@ const { validationResult } = require("express-validator");
 const toLowerCaseValue = (object) => {
   object.name = object.name.toLowerCase();
   object.description = object.description.toLowerCase();
-  object.status = object.status.toLowerCase();
+  if (object.status) {
+    object.status = object.status.toLowerCase();
+  }
+
   return object;
 };
 
@@ -60,31 +63,31 @@ taskController.getAllTask = async (req, res, next) => {
   }
 };
 
-//Get all task of 1 user
-taskController.getAllTask1User = async (req, res, next) => {
-  try {
-    const errors = validationResult(req);
+// //Get all task of 1 user
+// taskController.getAllTask1User = async (req, res, next) => {
+//   try {
+//     const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+//     if (!errors.isEmpty()) {
+//       return res.status(400).json({ errors: errors.array() });
+//     }
 
-    const { userId } = req.params;
-    let filter = { isDeleted: false, asignTaskTo: `${userId}` };
+//     const { userId } = req.params;
+//     let filter = { isDeleted: false, asignTaskTo: `${userId}` };
 
-    const listOfFound = await Task.find(filter).populate("asignTaskTo");
-    sendResponse(
-      res,
-      200,
-      true,
-      { listOfFound },
-      null,
-      "Get all tasks of user Success"
-    );
-  } catch (err) {
-    next(err);
-  }
-};
+//     const listOfFound = await Task.find(filter).populate("asignTaskTo");
+//     sendResponse(
+//       res,
+//       200,
+//       true,
+//       { listOfFound },
+//       null,
+//       "Get all tasks of user Success"
+//     );
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
 //Get single task by id
 taskController.getTaskById = async (req, res, next) => {
@@ -142,7 +145,14 @@ taskController.updateTaskStatus = async (req, res, next) => {
         updateStatus,
         options
       );
-      sendResponse(res, 200, true, { updated }, null, "Update User Success");
+      sendResponse(
+        res,
+        200,
+        true,
+        { updated },
+        null,
+        "Update Task Status Success"
+      );
     }
   } catch (err) {
     next(err);
@@ -158,11 +168,7 @@ taskController.assignTask = async (req, res, next) => {
     const { taskId } = req.params;
     const targetId = taskId;
     console.log(userId);
-    // if (userId === null) {
-    //   console.log("true");
-    // } else {
-    //   console.log("false");
-    // }
+
     const assignTo = { asignTaskTo: userId };
 
     const errors = validationResult(req);
@@ -170,8 +176,12 @@ taskController.assignTask = async (req, res, next) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const updated = await Task.findByIdAndUpdate(targetId, assignTo, options);
-    sendResponse(res, 200, true, { updated }, null, "Update User Success");
+    const asignTaskTo = await Task.findByIdAndUpdate(
+      targetId,
+      assignTo,
+      options
+    );
+    sendResponse(res, 200, true, { asignTaskTo }, null, "Asign Task Success");
   } catch (err) {
     next(err);
   }
@@ -191,12 +201,17 @@ taskController.deleteTaskById = async (req, res, next) => {
     const updateInfoDelete = { isDeleted: true };
     const options = { new: true };
 
-    const updated = await Task.findByIdAndUpdate(
+    let deleteTask = await Task.findByIdAndUpdate(
       targetId,
       updateInfoDelete,
       options
     );
-    sendResponse(res, 200, true, { updated }, null, "Update User Success");
+
+    if (deleteTask !== null) {
+      sendResponse(res, 200, true, { deleteTask }, null, "Delete Task Success");
+    } else {
+      throw new AppError(402, "Bad Request", "Task is not found");
+    }
   } catch (err) {
     next(err);
   }

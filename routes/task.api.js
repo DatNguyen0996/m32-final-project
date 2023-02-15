@@ -26,7 +26,7 @@ router.get("/", validate.validateTaskStatus(), getAllTask);
  * @description get all tasks of 1 user
  * @access public
  */
-router.get("/user/:userId", validate.validateUserId(), getAllTask1User);
+// router.get("/user/:userId", validate.validateUserId(), getAllTask1User);
 
 //Read
 /**

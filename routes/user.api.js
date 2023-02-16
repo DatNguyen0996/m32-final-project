@@ -8,7 +8,7 @@ const {
   getUserById,
   updateUserById,
   deleteUserById,
-  getAllTask1User,
+  getAllTaskOfOneUser,
 } = require("../controllers/user.controllers");
 
 //Read
@@ -33,7 +33,7 @@ router.get("/:userId", validate.validateUserId(), getUserById);
  * @description get all tasks of 1 user
  * @access public
  */
-router.get("/gettask/:userId", validate.validateUserId(), getAllTask1User);
+router.get("/gettask/:userId", validate.validateUserId(), getAllTaskOfOneUser);
 
 //Create
 /**

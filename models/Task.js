@@ -10,7 +10,7 @@ const taskSchema = mongoose.Schema(
       enum: ["pending", "working", "review", "done", "archive"],
       require: true,
     },
-    asignTaskTo: {
+    assignTaskTo: {
       // type: mongoose.SchemaTypes.ObjectId,
       type: mongoose.SchemaTypes.ObjectId || null,
       ref: "User",

@@ -26,6 +26,7 @@ userController.createUser = async (req, res, next) => {
     next(err);
   }
 };
+
 //Get all user
 
 userController.getAllUser = async (req, res, next) => {
@@ -38,16 +39,20 @@ userController.getAllUser = async (req, res, next) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const getData = await User.find(filter);
-    let filterUser;
+    const getUser = await User.find(filter);
+    let listOfUser;
 
     name
-      ? (filterUser = getData.filter((user) =>
+      ? (listOfUser = getUser.filter((user) =>
           user.name.includes(name.toLowerCase())
         ))
-      : (filterUser = getData);
+      : (listOfUser = getUser);
 
-    sendResponse(res, 200, true, { filterUser }, null, "Get User Success");
+    if (listOfUser.length === 0) {
+      sendResponse(res, 200, true, { listOfUser }, null, "Users not found");
+    }
+
+    sendResponse(res, 200, true, { listOfUser }, null, "Get Users Success");
   } catch (err) {
     next(err);
   }
@@ -67,19 +72,19 @@ userController.getUserById = async (req, res, next) => {
 
     filter._id = userId;
     const getUser = await User.find(filter);
-    sendResponse(res, 200, true, { getUser }, null, "Get User Success");
-    // if (getUser.length !== 0) {
-    //   sendResponse(res, 200, true, { getUser }, null, "Get User Success");
-    // } else {
-    //   throw new AppError(402, "Bad Request", "User is not found");
-    // }
+    // sendResponse(res, 200, true, { getUser }, null, "Get User Success");
+    if (getUser.length !== 0) {
+      sendResponse(res, 200, true, { getUser }, null, "Get User Success");
+    } else {
+      throw new AppError(402, "Bad Request", "User is not found");
+    }
   } catch (err) {
     next(err);
   }
 };
 
 //Get all task of 1 user
-userController.getAllTask1User = async (req, res, next) => {
+userController.getAllTaskOfOneUser = async (req, res, next) => {
   try {
     const errors = validationResult(req);
 
@@ -88,17 +93,36 @@ userController.getAllTask1User = async (req, res, next) => {
     }
 
     const { userId } = req.params;
-    let filter = { isDeleted: false, asignTaskTo: `${userId}` };
+    const checkUser = await User.find({ isDeleted: false, _id: `${userId}` });
+    console.log(checkUser);
 
-    const listOfFound = await Task.find(filter).populate("asignTaskTo");
-    sendResponse(
-      res,
-      200,
-      true,
-      { listOfFound },
-      null,
-      "Get all tasks of user Success"
-    );
+    if (checkUser.length === 0) {
+      throw new AppError(402, "Bad Request", "User is not found");
+    }
+
+    const filter = { isDeleted: false, assignTaskTo: `${userId}` };
+
+    const listOfFound = await Task.find(filter).populate("assignTaskTo");
+
+    if (listOfFound.length === 0) {
+      sendResponse(
+        res,
+        200,
+        true,
+        { listOfFound },
+        null,
+        "User have not any task"
+      );
+    } else {
+      sendResponse(
+        res,
+        200,
+        true,
+        { listOfFound },
+        null,
+        "Get all tasks of user Success"
+      );
+    }
   } catch (err) {
     next(err);
   }
@@ -115,10 +139,14 @@ userController.updateUserById = async (req, res, next) => {
     const { userId } = req.params;
     const updateUser = req.body;
     const targetId = userId;
-
     const options = { new: true };
+
     const updated = await User.findByIdAndUpdate(targetId, updateUser, options);
-    sendResponse(res, 200, true, { updated }, null, "Update User Success");
+    if (updated === null) {
+      throw new AppError(402, "Bad Request", "User is not found");
+    } else {
+      sendResponse(res, 200, true, { updated }, null, "Update User Success");
+    }
   } catch (err) {
     next(err);
   }
